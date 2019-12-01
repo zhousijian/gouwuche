@@ -22,7 +22,7 @@ $(function(){
 let id = location.search.substring(4)
 // console.log(location);
 
-// 遍历数组，获取指定条件元素的方法
+// 遍历数组，获取指定条件元素对象的方法
 let target = phoneData.find(function(e){
     return e.pID == id
 })

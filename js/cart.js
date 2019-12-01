@@ -60,6 +60,7 @@ $('.item-list').append(html)
 let onCkall = arr.find(function(e){
   return !e.isChecked;
 })
+// console.log(onCkall);
 
 // if(onCkall){
 //   // 有没有勾选的产品
@@ -198,6 +199,13 @@ $('.item-list').on('blur','.number',function(){
   let obj = arr.find(function(e){
     return e.pID == id;
   });
+
+
+
+  // console.log(obj);
+  
+
+
   obj.number = parseInt(current);
   // 要把数据存储到本地里面才可以
   kits.cun('shangpin',arr);
@@ -206,6 +214,52 @@ $('.item-list').on('blur','.number',function(){
   // 更新右边的总价
   $(this).parents('.item').find('.computed').text(obj.number * obj.price);
 })
+
+// 实现键盘回车键按下--事件委托
+// -- 上面已经把原来的值保存起来了
+// $('.item-list').on('click','.number',function(){
+//     // 在输入内容前，把当前的值，先保存起来，如果失焦的时候输入结果是不合理的，我们可以恢复原来的数字
+//     let num = $(this).val();
+//     // 把旧的，正确的数量先存储起来
+//     $(this).attr('data-num',num);
+//   })
+
+// 实现键盘回车键按下--事件委托
+$('.item-list').on('keydown','.number',function(e){
+ // console.dir(e);
+ // 需要判断按下的是否为回车键
+    if(e.keyCode === 13){
+      // console.log('是回车键');
+      // 先获取当前输入的内容
+  let current = $(this).val();
+  // 每次让用户自己输入的内容，一定要做合法性判断
+  if(current.trim().length == 0 || isNaN(current) || parseInt(current) <= 0){
+    let old = $(this).attr('data-old');
+    $(this).attr('data-old',old);
+    alert('商品数量不正确，请输入一个阿拉伯数字')
+    return;
+  };
+  // 如果验证通过，把总价之类的数据更新即可
+  // 数量也要更新到本地数据
+  let id = $(this).parents('.item').attr('data-id');
+  // 找到id相同的元素
+  let obj = arr.find(function(e){
+    return e.pID == id;  });
+  // 把新的值更新到本地里
+  obj.number = parseInt(current);
+  // 要把数据存储到本地里面才可以
+  kits.cun('shangpin',arr);
+  // 计算总价格和总件数
+  kits.count(arr);
+  // 更新右边的总价
+  $(this).parents('.item').find('.computed').text(obj.number * obj.price)
+  };
+})
+ 
+  
+
+
+
 // 实现删除
 $('.item-list').on('click','.item-del',function(){
   layer.confirm('你确定要删除吗?', {icon: 0, title:'警告'}, (index)=>{
@@ -219,6 +273,15 @@ $('.item-list').on('click','.item-del',function(){
     arr = arr.filter(e =>{
       return e.pID != id;
     })
+
+
+
+
+    console.log(arr);
+    
+
+
+
     kits.cun('shangpin',arr);
     // 重新更新总件数和总价
     kits.count(arr);
